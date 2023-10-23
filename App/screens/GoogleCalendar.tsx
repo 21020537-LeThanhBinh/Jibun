@@ -1,7 +1,6 @@
-import React, { SyntheticEvent } from 'react';
-import { SafeAreaView } from 'react-native';
+import React, { SyntheticEvent, useEffect } from 'react';
 import ApiCalendar from "react-google-calendar-api";
-import { Button } from 'react-native';
+import { Button, SafeAreaView } from 'react-native';
 
 const config = {
   clientId: "361670284650-upvmuj28gcqvdnn83mncqs6i8gmlo04g.apps.googleusercontent.com",
@@ -22,6 +21,10 @@ const GoogleCalendarScreen: () => JSX.Element = () => {
       apiCalendar.handleSignoutClick();
     }
   }
+
+  useEffect(() => {
+
+  }, []);
 
   return (
     <SafeAreaView style={{ height: '100%' }}>

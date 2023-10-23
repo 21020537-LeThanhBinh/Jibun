@@ -1,0 +1,406 @@
+[
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#4CB5DE",
+    "id": "1",
+    "isPrimary": true,
+    "source": "My calendar",
+    "title": "My calendar",
+    "type": "LOCAL"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#D75F64",
+    "id": "2",
+    "isPrimary": false,
+    "source": "local.samsungholiday",
+    "title": "공휴일",
+    "type": "LOCAL"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#D75F64",
+    "id": "3",
+    "isPrimary": false,
+    "source": "local.samsungholiday",
+    "title": "대체공휴일",
+    "type": "LOCAL"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#A1A1A1",
+    "id": "4",
+    "isPrimary": false,
+    "source": "local.samsungholiday",
+    "title": "법정기념일",
+    "type": "LOCAL"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#0046AD",
+    "id": "5",
+    "isPrimary": true,
+    "source": "binh191519@gmail.com",
+    "title": "Samsung Calendar",
+    "type": "com.osp.app.signin"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#9FE1E7",
+    "id": "6",
+    "isPrimary": true,
+    "source": "binh191519@gmail.com",
+    "title": "binh191519@gmail.com",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#92E1C0",
+    "id": "8",
+    "isPrimary": false,
+    "source": "binh191519@gmail.com",
+    "title": "Sinh nhật",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#16A765",
+    "id": "9",
+    "isPrimary": false,
+    "source": "binh191519@gmail.com",
+    "title": "Ngày lễ ở Việt Nam",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#9FE1E7",
+    "id": "10",
+    "isPrimary": true,
+    "source": "bibop191519@gmail.com",
+    "title": "bibop191519@gmail.com",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#16A765",
+    "id": "11",
+    "isPrimary": false,
+    "source": "bibop191519@gmail.com",
+    "title": "Ngày lễ ở Việt Nam",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#92E1C0",
+    "id": "13",
+    "isPrimary": false,
+    "source": "bibop191519@gmail.com",
+    "title": "Birthdays",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#16A765",
+    "id": "14",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Ngày lễ ở Việt Nam",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#7BD148",
+    "id": "15",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Health",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#92E1C0",
+    "id": "17",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Self-learn",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#AC725E",
+    "id": "18",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Read",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#FAD165",
+    "id": "19",
+    "isPrimary": true,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Bình",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#FA573C",
+    "id": "20",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Essential",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#9FE1E7",
+    "id": "21",
+    "isPrimary": true,
+    "source": "ninjalanhat@gmail.com",
+    "title": "ninjalanhat@gmail.com",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#16A765",
+    "id": "22",
+    "isPrimary": false,
+    "source": "ninjalanhat@gmail.com",
+    "title": "Ngày lễ ở Việt Nam",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#92E1C0",
+    "id": "24",
+    "isPrimary": false,
+    "source": "ninjalanhat@gmail.com",
+    "title": "Birthdays",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#FFAD46",
+    "id": "25",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Entertain",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#9FE1E7",
+    "id": "26",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "UET",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#FFAD46",
+    "id": "28",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "日本語",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#9FE1E7",
+    "id": "29",
+    "isPrimary": true,
+    "source": "trungcave717@gmail.com",
+    "title": "trungcave717@gmail.com",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#16A765",
+    "id": "30",
+    "isPrimary": false,
+    "source": "trungcave717@gmail.com",
+    "title": "Holidays in Vietnam",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#92E1C0",
+    "id": "31",
+    "isPrimary": false,
+    "source": "trungcave717@gmail.com",
+    "title": "Birthdays",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free",
+      "tentative"
+    ],
+    "allowsModifications": true,
+    "color": "#71AEA7",
+    "id": "32",
+    "isPrimary": true,
+    "source": "21020537@vnu.edu.vn",
+    "title": "21020537@vnu.edu.vn",
+    "type": "com.google.android.gm.exchange"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": false,
+    "color": "#B99AFF",
+    "id": "35",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Phases of the Moon",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#7BD148",
+    "id": "36",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Project",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#92E1C0",
+    "id": "37",
+    "isPrimary": false,
+    "source": "lethanhbinh6203@gmail.com",
+    "title": "Work",
+    "type": "com.google"
+  },
+  {
+    "allowedAvailabilities": [
+      "busy",
+      "free"
+    ],
+    "allowsModifications": true,
+    "color": "#666666",
+    "id": "38",
+    "isPrimary": true,
+    "source": "binh191519@gmail.com",
+    "title": "MY_CALENDAR",
+    "type": "com.package_name"
+  }
+]
