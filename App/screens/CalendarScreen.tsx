@@ -16,7 +16,6 @@ import ReminderService from '../components/ReminderService';
 const today = new Date();
 const getDate = (offset = 0) => CalendarUtils.getCalendarDateString(new Date().setDate(today.getDate() + offset));
 
-const INITIAL_TIME = { hour: 9, minutes: 0 };
 const EVENTS: TimelineEventProps[] = [
   {
     start: `${getDate(-1)} 09:20:00`,
@@ -43,7 +42,7 @@ export default function CalendarScreen() {
   useEffect(() => {
     // Todo: optimize
     const startDate = new Date(currentDate).toISOString();
-    const endDate = new Date(new Date(currentDate).getTime() + 24 * 60 * 60 * 1000).toISOString();
+    const endDate = new Date(new Date(currentDate).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
     const Reminder = new ReminderService();
     Reminder.getEvents(startDate, endDate)
@@ -60,7 +59,7 @@ export default function CalendarScreen() {
       .catch((error) => {
         console.log(error);
       });
-  }, [currentDate]);
+  }, []);
 
   useEffect(() => {
     setEventsByDate(groupBy(events, (e: any) => CalendarUtils.getCalendarDateString(e.start)));
@@ -135,8 +134,8 @@ export default function CalendarScreen() {
 
   const timelineProps: Partial<TimelineProps> = {
     format24h: true,
-    onBackgroundLongPress: createNewEvent,
-    onBackgroundLongPressOut: approveNewEvent,
+    // onBackgroundLongPress: createNewEvent,
+    // onBackgroundLongPressOut: approveNewEvent,
     // scrollToFirst: true,
     // start: 0,
     // end: 24,
@@ -156,8 +155,8 @@ export default function CalendarScreen() {
     >
       <ExpandableCalendar
         firstDay={1}
-        leftArrowImageSource={require('../img/previous.png')}
-        rightArrowImageSource={require('../img/next.png')}
+        // leftArrowImageSource={require('../img/previous.png')}
+        // rightArrowImageSource={require('../img/next.png')}
         // markedDates={marked}
       />
       <TimelineList
@@ -166,7 +165,7 @@ export default function CalendarScreen() {
         showNowIndicator
         // scrollToNow
         scrollToFirst
-        initialTime={INITIAL_TIME}
+        initialTime={{ hour: 9, minutes: 0 }}
       />
     </CalendarProvider>
   );
