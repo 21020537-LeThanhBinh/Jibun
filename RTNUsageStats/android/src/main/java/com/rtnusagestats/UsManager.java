@@ -29,11 +29,29 @@ import androidx.core.content.ContextCompat;
 import java.util.Calendar;
 import java.util.List;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.Drawable;
+import android.content.pm.ApplicationInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import java.io.ByteArrayOutputStream;
+import android.util.Base64;
+
+
 class UsManager extends ReactContextBaseJavaModule implements ActivityEventListener {
   private Context context;
   private ReactApplicationContext reactContext;
   private UsageStatsManager usageStatsManager;
   public static final String LOG_TAG = "ReactNativeUsManager";
+  private static PackageManager pm;
+  // private static List<AppInfo> appsInfo;
 
   public ReactApplicationContext getReactContext() {
     return reactContext;
@@ -45,6 +63,70 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
     this.reactContext = reactContext;
     reactContext.addActivityEventListener(this);
     Log.d(LOG_TAG, "UsManager created");
+
+    pm = reactContext.getPackageManager();
+  }
+
+  private static String getAppNameByPackageName(String packageName) {
+    try {
+      PackageInfo pi = pm.getPackageInfo(packageName, 0);
+      return pi.applicationInfo.loadLabel(pm).toString();
+    } catch (Exception e) {
+      // Handle Error here
+      Log.d(LOG_TAG, e.getMessage());
+      return "";
+    }
+  }
+
+  public static Drawable getIconFromPackageName(String packageName, Context context) {
+    try {
+      PackageInfo pi = pm.getPackageInfo(packageName, 0);
+      Context otherAppCtx = context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
+
+      int displayMetrics[] = { context.getResources().getDisplayMetrics().DENSITY_XHIGH, context.getResources().getDisplayMetrics().DENSITY_HIGH, context.getResources().getDisplayMetrics().DENSITY_TV };
+
+      for (int displayMetric : displayMetrics) {
+        try {
+          Drawable d = otherAppCtx.getResources().getDrawableForDensity(pi.applicationInfo.icon, displayMetric);
+          if (d != null) {
+            return d;
+          }
+        } catch (Resources.NotFoundException e) {
+          Log.d(LOG_TAG, "NameNotFound for" + packageName + " @ density: " + displayMetric);
+          continue;
+        }
+      }
+
+    } catch (Exception e) {
+      // Handle Error here
+      Log.d(LOG_TAG, e.getMessage());
+    }
+
+    ApplicationInfo appInfo = null;
+    try {
+      appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+    } catch (PackageManager.NameNotFoundException e) {
+      return null;
+    }
+
+    return appInfo.loadIcon(pm);
+  }
+
+  private String encodeDrawable(Drawable d) {
+    String encoded = "";
+
+    if (d instanceof BitmapDrawable) {
+      BitmapDrawable bitmapDrawable = (BitmapDrawable) d;
+      Bitmap bitmap = bitmapDrawable.getBitmap();
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+      byte[] byteArray = byteArrayOutputStream.toByteArray();
+      encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+    } else {
+        // Handle the case where drawable is not a BitmapDrawable
+    }
+
+    return encoded;
   }
 
   @Override
@@ -75,11 +157,13 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
     // != PackageManager.PERMISSION_GRANTED ){
 
     // if (ContextCompat.checkSelfPermission(reactContext,
-    //     Manifest.permission.PACKAGE_USAGE_STATS) != PackageManager.PERMISSION_GRANTED) {
-    //   ActivityCompat.requestPermissions(getCurrentActivity(), new String[] { Manifest.permission.PACKAGE_USAGE_STATS },
-    //       1);
+    // Manifest.permission.PACKAGE_USAGE_STATS) !=
+    // PackageManager.PERMISSION_GRANTED) {
+    // ActivityCompat.requestPermissions(getCurrentActivity(), new String[] {
+    // Manifest.permission.PACKAGE_USAGE_STATS },
+    // 1);
     // } else {
-    //   promise.resolve("default case");
+    // promise.resolve("default case");
     // }
   }
 
@@ -94,31 +178,43 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
     calendar.add(Calendar.DAY_OF_YEAR, -1);
     long startTime = calendar.getTimeInMillis();
 
-    List<UsageStats> usageStatsList = getUsageStatsManager().queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime);
-    
+    List<UsageStats> usageStatsList = getUsageStatsManager().queryUsageStats(UsageStatsManager.INTERVAL_DAILY,
+        startTime, endTime);
+
     WritableArray array = new WritableNativeArray();
     for (UsageStats usageStats : usageStatsList) {
-        if (usageStats.getTotalTimeInForeground() == 0) continue;
-        
-        WritableMap map = new WritableNativeMap();
-        map.putString("packageName", usageStats.getPackageName());
-        map.putDouble("totalTimeInForeground", usageStats.getTotalTimeInForeground());
-        array.pushMap(map);
+      if (usageStats.getTotalTimeInForeground() == 0)
+        continue;
+
+      WritableMap map = new WritableNativeMap();
+      map.putString("packageName", usageStats.getPackageName());
+      map.putDouble("totalTimeInForeground", usageStats.getTotalTimeInForeground());
+      array.pushMap(map);
     }
     promise.resolve(array);
   }
 
   public void getRangeUsageStats(long startTime, long endTime, Promise promise) {
-    List<UsageStats> usageStatsList = getUsageStatsManager().queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime, endTime);
-    
+    List<UsageStats> usageStatsList = getUsageStatsManager().queryUsageStats(UsageStatsManager.INTERVAL_BEST, startTime,
+        endTime);
+
     WritableArray array = new WritableNativeArray();
     for (UsageStats usageStats : usageStatsList) {
-        if (usageStats.getTotalTimeInForeground() == 0) continue;
-        
-        WritableMap map = new WritableNativeMap();
-        map.putString("packageName", usageStats.getPackageName());
-        map.putDouble("totalTimeInForeground", usageStats.getTotalTimeInForeground());
-        array.pushMap(map);
+      if (usageStats.getTotalTimeInForeground() == 0)
+        continue;
+
+      WritableMap map = new WritableNativeMap();
+      // map.putString("packageName", usageStats.getPackageName());
+      map.putString("packageName", getAppNameByPackageName(usageStats.getPackageName()));
+
+      WritableMap appInfo = new WritableNativeMap();
+      appInfo.putString("packageName", usageStats.getPackageName());
+      appInfo.putString("name", getAppNameByPackageName(usageStats.getPackageName()));
+      appInfo.putString("icon", encodeDrawable(getIconFromPackageName(usageStats.getPackageName(), reactContext)));
+      map.putMap("appInfo", appInfo);
+
+      map.putDouble("totalTimeInForeground", usageStats.getTotalTimeInForeground());
+      array.pushMap(map);
     }
     promise.resolve(array);
   }
