@@ -1,11 +1,11 @@
-import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
+// import GoogleFit, { BucketUnit, Scopes } from 'react-native-google-fit'
 import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
-import Fitness from '@ovalmoney/react-native-fitness';
+// import Fitness from '@ovalmoney/react-native-fitness';
 
-const permissions = [
-  { kind: Fitness.PermissionKinds.Steps, access: Fitness.PermissionAccesses.Write },
-];
+// const permissions = [
+//   { kind: Fitness.PermissionKinds.Steps, access: Fitness.PermissionAccesses.Write },
+// ];
 
 const GoogleFitScreen: () => JSX.Element = () => {
   const [authResult, setAuthResult] = React.useState<string>('');
@@ -30,21 +30,21 @@ const GoogleFitScreen: () => JSX.Element = () => {
   useEffect(() => {
     console.log('GoogleFitScreen start')
 
-    Fitness.isAuthorized(permissions)
-      .then((authorized) => {
-        console.log('Fitness.isAuthorized', authorized)
-      })
-      .catch((error) => {
-        console.log('Fitness.isAuthorized error', error)
-      });
+    // Fitness.isAuthorized(permissions)
+    //   .then((authorized) => {
+    //     console.log('Fitness.isAuthorized', authorized)
+    //   })
+    //   .catch((error) => {
+    //     console.log('Fitness.isAuthorized error', error)
+    //   });
 
-    Fitness.requestPermissions([{ kind: permissions[0].kind, access: permissions[0].access }])
-      .then((authorized) => {
-        console.log('Fitness.requestPermissions', authorized)
-      })
-      .catch((error) => {
-        console.log('Fitness.requestPermissions error', error)
-      });
+    // Fitness.requestPermissions([{ kind: permissions[0].kind, access: permissions[0].access }])
+    //   .then((authorized) => {
+    //     console.log('Fitness.requestPermissions', authorized)
+    //   })
+    //   .catch((error) => {
+    //     console.log('Fitness.requestPermissions error', error)
+    //   });
 
     // GoogleFit.checkIsAuthorized().then(() => {
     //   console.log(GoogleFit.isAuthorized) // Then you can simply refer to `GoogleFit.isAuthorized` boolean.

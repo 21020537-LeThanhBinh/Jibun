@@ -3,9 +3,9 @@ import { TouchableOpacity, View } from 'react-native';
 import { Bubble, GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import CustomFileBubble from '../components/chat/CustomFileBubble';
 import CustomImagesBubble from '../components/chat/CustomImagesBubble';
 import { Day } from '../components/chat/Day';
+import { createTable, getChatItems, getDBConnection, saveChatItems } from '../sqlite/db-service';
 
 const user = {
   _id: 1,
@@ -18,62 +18,96 @@ const otherUser = {
   avatar: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
 }
 
+const testImagesChat: IMessage[] = [
+  {
+    _id: 7,
+    text: '',
+    createdAt: new Date(),
+    user: otherUser,
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
+  },
+  {
+    _id: 6,
+    text: '',
+    createdAt: new Date(),
+    user: user,
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
+  },
+  {
+    _id: 5,
+    text: '',
+    createdAt: new Date(),
+    user: otherUser,
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
+  },
+  {
+    _id: 4,
+    text: '',
+    createdAt: new Date(),
+    user: user,
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
+  },
+  {
+    _id: 3,
+    text: '',
+    createdAt: new Date(),
+    user: otherUser,
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
+  },
+  {
+    _id: 2,
+    text: '',
+    createdAt: new Date(),
+    user: user,
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
+  },
+  {
+    _id: 1,
+    text: 'Hello developer',
+    createdAt: new Date(),
+    user: otherUser,
+  },
+]
+
 export function Chat() {
-  const [messages, setMessages] = useState<IMessage[]>([])
+  const [messages, setMessages] = useState<IMessage[]>([...testImagesChat])
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 7,
-        text: '',
-        createdAt: new Date(),
-        user: otherUser,
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
-      },
-      {
-        _id: 6,
-        text: '',
-        createdAt: new Date(),
-        user: user,
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
-      },
-      {
-        _id: 5,
-        text: '',
-        createdAt: new Date(),
-        user: otherUser,
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
-      },
-      {
-        _id: 4,
-        text: '',
-        createdAt: new Date(),
-        user: user,
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
-      },
-      {
-        _id: 3,
-        text: '',
-        createdAt: new Date(),
-        user: otherUser,
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no,https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
-      },
-      {
-        _id: 2,
-        text: '',
-        createdAt: new Date(),
-        user: user,
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocKGGWAnB_71dm5ARX25RJMTDlJBut01eyat2yH6vrLXqZ4=s576-c-no',
-      },
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: otherUser,
-      },
+  // Todo: fix this part
+  const loadDataCallback = useCallback(async () => {
+    try {
+      const db = await getDBConnection();
+      await createTable(db);
+      const storedTodoItems = await getChatItems(db);
+      if (storedTodoItems.length) {
+        setMessages(storedTodoItems.map((item) => {
+          return {
+            ...item,
+            createdAt: new Date(item.createdAt),
+            // get user by inner join
+            user: otherUser,
+            image: item.image,
+          }
+        }))
+      } else {
+        await saveChatItems(db, testImagesChat.map((item) => {
+          return {
+            ...item,
+            createdAt: (item.createdAt as Date).getTime(),
+            // get user by inner join
+            userId: item.user._id,
+            image: item.image,
+          }
+        }));
+        setMessages(testImagesChat);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
-    ])
-  }, [])
+  // useEffect(() => {
+  //   loadDataCallback();
+  // }, [loadDataCallback]);
 
   const onSend = useCallback((messages: IMessage[]) => {
     setMessages(previousMessages =>
@@ -84,12 +118,6 @@ export function Chat() {
   const renderActions = () => {
     return (
       <View style={{ height: '100%', flexDirection: 'row', gap: 10, marginLeft: 10, alignItems: 'center' }}>
-        {/* <TouchableOpacity onPress={onPickDocument}>
-          <Icon
-            name="paperclip"
-            size={20}
-          />
-        </TouchableOpacity> */}
         <TouchableOpacity onPress={onClickCamera}>
           <Icon
             name="camera"
@@ -149,10 +177,7 @@ export function Chat() {
     if (currentMessage.image) {
       // Custom Images Bubble
       return <CustomImagesBubble currentMessage={currentMessage} user={user} />
-    } else if (currentMessage.file && currentMessage.file.url) {
-      // Custom File Bubble
-      return <CustomFileBubble currentMessage={currentMessage} user={user} />
-    } 
+    }
     // Default Bubble
     return (
       <Bubble

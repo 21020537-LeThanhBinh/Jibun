@@ -31,19 +31,18 @@ import java.util.List;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.content.pm.ApplicationInfo;
+import android.util.Base64;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import java.io.ByteArrayOutputStream;
-import android.util.Base64;
-
 
 class UsManager extends ReactContextBaseJavaModule implements ActivityEventListener {
   private Context context;
@@ -51,7 +50,6 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
   private UsageStatsManager usageStatsManager;
   public static final String LOG_TAG = "ReactNativeUsManager";
   private static PackageManager pm;
-  // private static List<AppInfo> appsInfo;
 
   public ReactApplicationContext getReactContext() {
     return reactContext;
@@ -62,8 +60,6 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
     context = reactContext;
     this.reactContext = reactContext;
     reactContext.addActivityEventListener(this);
-    Log.d(LOG_TAG, "UsManager created");
-
     pm = reactContext.getPackageManager();
   }
 
@@ -83,7 +79,9 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
       PackageInfo pi = pm.getPackageInfo(packageName, 0);
       Context otherAppCtx = context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
 
-      int displayMetrics[] = { context.getResources().getDisplayMetrics().DENSITY_XHIGH, context.getResources().getDisplayMetrics().DENSITY_HIGH, context.getResources().getDisplayMetrics().DENSITY_TV };
+      int displayMetrics[] = { context.getResources().getDisplayMetrics().DENSITY_XHIGH,
+          context.getResources().getDisplayMetrics().DENSITY_HIGH,
+          context.getResources().getDisplayMetrics().DENSITY_TV };
 
       for (int displayMetric : displayMetrics) {
         try {
@@ -123,7 +121,7 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
       byte[] byteArray = byteArrayOutputStream.toByteArray();
       encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
     } else {
-        // Handle the case where drawable is not a BitmapDrawable
+      // Handle the case where drawable is not a BitmapDrawable
     }
 
     return encoded;
@@ -204,8 +202,6 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
         continue;
 
       WritableMap map = new WritableNativeMap();
-      // map.putString("packageName", usageStats.getPackageName());
-      map.putString("packageName", getAppNameByPackageName(usageStats.getPackageName()));
 
       WritableMap appInfo = new WritableNativeMap();
       appInfo.putString("packageName", usageStats.getPackageName());

@@ -1,31 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import Geolocation from '@react-native-community/geolocation';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 
+// Todo: track location in background using expo's library after requesting permissions from google
 export function Location() {
-  const [longLat, setLongLat] = useState({
-    latitude: 0,
-    longitude: 0
-  });
+  // useEffect(() => {
+  //   Geolocation.requestAuthorization(() => {
+  //     console.log('Authorization requested');
+  //   }, (error) => {
+  //     console.log(error.code, error.message);
+  //   });
 
-  useEffect(() => {
-    // navigator.geolocation.watchPosition(
-    //   position => {
-    //     console.log(position);
-    //     const { latitude, longitude } = position.coords;
-    //     this.setState({
-    //       latitude, longitude
-    //     },
-    //       error => console.log(error),
-    //       {
-    //         enableHighAccuracy: true,
-    //         timeout: 20000,
-    //         maximumAge: 1000,
-    //         distanceFilter: 10
-    //       }
-    //     );
-    //   }
-    // );
-  }, []);
+  //   // Todo: increase interval to a few minutes
+  //   setInterval(() => {
+  //     Geolocation.getCurrentPosition(
+  //       (position) => {
+  //         console.log(new Date().getTime(), position);
+  //       },
+  //       (error) => {
+  //         console.log(error.code, error.message);
+  //       },
+  //     );
+  //   }, 1000);
+
+  // }, []);
 
   return (
     <View>

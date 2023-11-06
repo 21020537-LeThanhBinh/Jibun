@@ -90,7 +90,7 @@ const UsageManagerScreen: () => JSX.Element = () => {
     <SafeAreaView style={{ height: '100%' }}>
       <PermissionModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
 
-      <View style={styles.nav}>
+      {/* <View style={styles.nav}>
         <TouchableOpacity onPress={() => { }}>
           <MaterialCommunityIcons name="chart-donut" color={"black"} size={30} />
 
@@ -105,7 +105,7 @@ const UsageManagerScreen: () => JSX.Element = () => {
           <MaterialCommunityIcons name="cellphone-lock" color={"black"} size={30} />
 
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginVertical: 20 }}>
