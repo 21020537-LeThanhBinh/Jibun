@@ -1,9 +1,8 @@
-import Geolocation from '@react-native-community/geolocation';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
 // Todo: track location in background using expo's library after requesting permissions from google
-export function Location() {
+export function LocationScreen() {
   // useEffect(() => {
   //   Geolocation.requestAuthorization(() => {
   //     console.log('Authorization requested');

@@ -3,12 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CalendarScreen from './screens/CalendarScreen';
-import { Chat } from './screens/Chat';
+import { ChatScreen } from './screens/ChatScreen';
 // import GoogleCalendarScreen from './screens/GoogleCalendar';
 import GoogleFitScreen from './screens/GoogleFitScreen';
-import OverviewScreen from './screens/Overview';
+import { LocationScreen } from './screens/LocationScreen';
+import OverviewScreen from './screens/OverviewScreen';
 import UsageManagerScreen from './screens/UsageManagerScreen';
-import { Location } from './screens/Location';
 
 const Tab = createBottomTabNavigator();
 
@@ -50,13 +50,13 @@ const App: () => JSX.Element = () => {
             <MaterialCommunityIcons name="google-fit" color={color} size={size} />
           ),
         }} />
-        <Tab.Screen name="Chat" component={Chat} options={{
+        <Tab.Screen name="Chat" component={ChatScreen} options={{
           tabBarLabel: "Chat",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="chat" color={color} size={size} />
           ),
         }} />
-        <Tab.Screen name="Location" component={Location} options={{
+        <Tab.Screen name="Location" component={LocationScreen} options={{
           tabBarLabel: "Location",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="map-marker" color={color} size={size} />

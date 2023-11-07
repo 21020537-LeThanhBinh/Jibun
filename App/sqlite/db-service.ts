@@ -1,14 +1,16 @@
+import { IMessage, User } from 'react-native-gifted-chat';
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
 
-interface IMessage {
+interface MyIMessage {
   _id: string | number;
   text: string;
   createdAt: number;
   userId: string | number;
-  image: string | undefined;
+  image: string;
 }
 
-const tableName = 'chatData';
+const chatTableName = 'chatData';
+const userTableName = 'userData';
 
 enablePromise(true);
 
@@ -16,13 +18,21 @@ export const getDBConnection = async () => {
   return openDatabase({ name: 'chat-data.db', location: 'default' });
 };
 
-export const createTable = async (db: SQLiteDatabase) => {
-  // create table if not exists
-  const query = `CREATE TABLE IF NOT EXISTS ${tableName}(
+export const createChatTable = async (db: SQLiteDatabase) => {
+  const query = `CREATE TABLE IF NOT EXISTS ${chatTableName}(
         textContent TEXT NOT NULL,
         createdAt INTEGER NOT NULL,
         userId INTEGER NOT NULL,
-        image TEXT,
+        image TEXT
+    );`;
+
+  await db.executeSql(query);
+};
+
+export const createUserTable = async (db: SQLiteDatabase) => {
+  const query = `CREATE TABLE IF NOT EXISTS ${userTableName}(
+        name TEXT NOT NULL,
+        avatar TEXT
     );`;
 
   await db.executeSql(query);
@@ -31,10 +41,22 @@ export const createTable = async (db: SQLiteDatabase) => {
 export const getChatItems = async (db: SQLiteDatabase): Promise<IMessage[]> => {
   try {
     const chatItems: IMessage[] = [];
-    const results = await db.executeSql(`SELECT rowid as _id,textContent as text,createdAt,userId,image FROM ${tableName}`);
+    const query = `SELECT ${chatTableName}.rowid as _id,textContent as text,createdAt,userId,image,name,avatar
+          FROM ${chatTableName}
+          INNER JOIN ${userTableName} ON ${chatTableName}.userId = ${userTableName}.rowid
+          ORDER BY _id DESC;
+      `;
+    const results = await db.executeSql(query);
     results.forEach(result => {
       for (let index = 0; index < result.rows.length; index++) {
-        chatItems.push(result.rows.item(index))
+        chatItems.push({
+          ...result.rows.item(index),
+          user: {
+            _id: result.rows.item(index).userId,
+            name: result.rows.item(index).name,
+            avatar: result.rows.item(index).avatar,
+          }
+        })
       }
     });
     return chatItems;
@@ -44,21 +66,35 @@ export const getChatItems = async (db: SQLiteDatabase): Promise<IMessage[]> => {
   }
 };
 
-export const saveChatItems = async (db: SQLiteDatabase, chatItems: IMessage[]) => {
+export const saveChatItems = async (db: SQLiteDatabase, chatItems: MyIMessage[]) => {
   const insertQuery =
-    `INSERT OR REPLACE INTO ${tableName}(rowid, textContent,createdAt,userId,image) values` +
-    chatItems.map(i => `(${i._id}, '${i.text}', '${i.createdAt}', '${i.userId}', '${i.image}')`).join(',');
+    `INSERT OR REPLACE INTO ${chatTableName}(textContent,createdAt,userId,image) values` +
+    chatItems.map(i => `('${i.text}', '${i.createdAt}', '${i.userId}', '${i.image}')`).join(',');
 
   return db.executeSql(insertQuery);
 };
 
-export const deleteTodoItem = async (db: SQLiteDatabase, _id: number) => {
-  const deleteQuery = `DELETE from ${tableName} where rowid = ${_id}`;
+export const saveUserItems = async (db: SQLiteDatabase, user: User[]) => {
+  const insertQuery =
+    `INSERT OR REPLACE INTO ${userTableName}(rowid,name,avatar) values` +
+    user.map(i => `(${i._id}, '${i.name}', '${i.avatar}')`).join(',');
+
+  return db.executeSql(insertQuery);
+};
+
+export const deleteChatItem = async (db: SQLiteDatabase, _id: number) => {
+  const deleteQuery = `DELETE from ${chatTableName} where rowid = ${_id}`;
   await db.executeSql(deleteQuery);
 };
 
-export const deleteTable = async (db: SQLiteDatabase) => {
-  const query = `drop table ${tableName}`;
+export const deleteChatTable = async (db: SQLiteDatabase) => {
+  const query = `drop table if exists ${chatTableName}`;
+
+  await db.executeSql(query);
+};
+
+export const deleteUserTable = async (db: SQLiteDatabase) => {
+  const query = `drop table if exists ${userTableName}`;
 
   await db.executeSql(query);
 };

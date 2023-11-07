@@ -46,7 +46,7 @@ const UsageManagerScreen: () => JSX.Element = () => {
   const [focusedApp, setFocusedApp] = useState<string | null>(null)
 
   useEffect(() => {
-    RTNUsageStats?.getRangeUsageStats((endDate - AYEAR + remainingTime).toString(), endDate.toString()).then(res => {
+    RTNUsageStats?.getRangeUsageStats((endDate - ADAY + remainingTime).toString(), endDate.toString()).then(res => {
       setPermissionGranted(res.length > 0)
     })
   }, [])
