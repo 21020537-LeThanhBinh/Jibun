@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Keyboard, TouchableOpacity, View } from 'react-native';
+import { Keyboard, TouchableOpacity, View, BackHandler } from 'react-native';
 import { Bubble, GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomImagesBubble from '../components/chat/CustomImagesBubble';
 import { Day } from '../components/chat/Day';
 import { createChatTable, createUserTable, deleteChatTable, getChatItems, getDBConnection, saveChatItems, saveUserItems } from '../sqlite/db-service';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const user = {
   _id: 1,
@@ -22,6 +23,8 @@ const otherUser = {
 export function ChatScreen() {
   const navigation = useNavigation();
   const [messages, setMessages] = useState<IMessage[]>([])
+  const [offset, setOffset] = useState(0);
+  const bottomTabBarHeight = useBottomTabBarHeight();
 
   useEffect(() => {
     // const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -199,6 +202,21 @@ export function ChatScreen() {
         onPressIn: () => {
           navigation.setOptions({ tabBarStyle: { display: 'none' } });
         },
+      }}
+      listViewProps={{
+        scrollEventThrottle: 400,
+        onScroll: (event: any) => {
+          const currentOffset = event.nativeEvent.contentOffset.y;
+          const dif = currentOffset - offset;
+      
+          if (dif < 0) {
+            navigation.setOptions({ tabBarStyle: { display: 'flex', animated: true } });
+            setOffset(currentOffset);
+          } else {
+            navigation.setOptions({ tabBarStyle: { display: 'none', animated: true } });
+            setOffset(currentOffset - bottomTabBarHeight);
+          }
+        }
       }}
     />
   )

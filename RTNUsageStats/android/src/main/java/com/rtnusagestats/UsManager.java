@@ -25,6 +25,7 @@ import android.provider.Settings;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
 
 import java.util.Calendar;
 import java.util.List;
@@ -43,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.ByteArrayOutputStream;
+import android.util.DisplayMetrics;
+import android.graphics.Canvas;
 
 class UsManager extends ReactContextBaseJavaModule implements ActivityEventListener {
   private Context context;
@@ -74,35 +77,41 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
     }
   }
 
-  public static Drawable getIconFromPackageName(String packageName, Context context) {
-    try {
-      PackageInfo pi = pm.getPackageInfo(packageName, 0);
-      Context otherAppCtx = context.createPackageContext(packageName, Context.CONTEXT_IGNORE_SECURITY);
+  public static Drawable getIconFromPackageName(String packageName, Context context) {// from ww w . j a v a 2s . c om
+    PackageManager pm = context.getPackageManager();
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+      try {
+        PackageInfo pi = pm.getPackageInfo(packageName, 0);
+        Context otherAppCtx = context.createPackageContext(
+            packageName, Context.CONTEXT_IGNORE_SECURITY);
 
-      int displayMetrics[] = { context.getResources().getDisplayMetrics().DENSITY_XHIGH,
-          context.getResources().getDisplayMetrics().DENSITY_HIGH,
-          context.getResources().getDisplayMetrics().DENSITY_TV };
+        int displayMetrics[] = { DisplayMetrics.DENSITY_XHIGH,
+            DisplayMetrics.DENSITY_HIGH,
+            DisplayMetrics.DENSITY_TV };
 
-      for (int displayMetric : displayMetrics) {
-        try {
-          Drawable d = otherAppCtx.getResources().getDrawableForDensity(pi.applicationInfo.icon, displayMetric);
-          if (d != null) {
-            return d;
+        for (int displayMetric : displayMetrics) {
+          try {
+            Drawable d = otherAppCtx.getResources()
+                .getDrawableForDensity(
+                    pi.applicationInfo.icon,
+                    displayMetric);
+            if (d != null) {
+              return d;
+            }
+          } catch (Resources.NotFoundException e) {
+            continue;
           }
-        } catch (Resources.NotFoundException e) {
-          Log.d(LOG_TAG, "NameNotFound for" + packageName + " @ density: " + displayMetric);
-          continue;
         }
-      }
 
-    } catch (Exception e) {
-      // Handle Error here
-      Log.d(LOG_TAG, e.getMessage());
+      } catch (Exception e) {
+        // Handle Error here
+      }
     }
 
     ApplicationInfo appInfo = null;
     try {
-      appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+      appInfo = pm.getApplicationInfo(packageName,
+          PackageManager.GET_META_DATA);
     } catch (PackageManager.NameNotFoundException e) {
       return null;
     }
@@ -110,19 +119,24 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
     return appInfo.loadIcon(pm);
   }
 
+  @NonNull
+  private Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
+    final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(),
+        Bitmap.Config.ARGB_8888);
+    final Canvas canvas = new Canvas(bmp);
+    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+    drawable.draw(canvas);
+    return bmp;
+  }
+
   private String encodeDrawable(Drawable d) {
     String encoded = "";
 
-    if (d instanceof BitmapDrawable) {
-      BitmapDrawable bitmapDrawable = (BitmapDrawable) d;
-      Bitmap bitmap = bitmapDrawable.getBitmap();
-      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-      bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-      byte[] byteArray = byteArrayOutputStream.toByteArray();
-      encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-    } else {
-      // Handle the case where drawable is not a BitmapDrawable
-    }
+    Bitmap bitmap = getBitmapFromDrawable(d);
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+    byte[] byteArray = byteArrayOutputStream.toByteArray();
+    encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
     return encoded;
   }
@@ -206,7 +220,10 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
       WritableMap appInfo = new WritableNativeMap();
       appInfo.putString("packageName", usageStats.getPackageName());
       appInfo.putString("name", getAppNameByPackageName(usageStats.getPackageName()));
-      appInfo.putString("icon", encodeDrawable(getIconFromPackageName(usageStats.getPackageName(), reactContext)));
+      Drawable d = getIconFromPackageName(usageStats.getPackageName(), reactContext);
+      Log.d(LOG_TAG, "Drawable: " + d);
+      String encoded = encodeDrawable(d);
+      appInfo.putString("icon", encoded);
       map.putMap("appInfo", appInfo);
 
       map.putDouble("totalTimeInForeground", usageStats.getTotalTimeInForeground());

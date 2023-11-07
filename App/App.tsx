@@ -9,8 +9,64 @@ import GoogleFitScreen from './screens/GoogleFitScreen';
 import { LocationScreen } from './screens/LocationScreen';
 import OverviewScreen from './screens/OverviewScreen';
 import UsageManagerScreen from './screens/UsageManagerScreen';
+import { Animated, View, TouchableOpacity, Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
+
+function MyTabBar({ state, descriptors, navigation }: any) {
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      {state.routes.map((route: any, index: number) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
+        const icon = options.tabBarIcon;
+        console.log(icon)
+
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name, route.params);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={{ flex: 1 }}
+          >
+            <Text style={{ color: isFocused ? '#673ab7' : '#222' }}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
 
 const App: () => JSX.Element = () => {
   return (
@@ -18,7 +74,9 @@ const App: () => JSX.Element = () => {
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: '#e91e63',
+          // tabBarHideOnKeyboard: true,
         }}
+        // tabBar={props => <MyTabBar {...props} />}
       >
         <Tab.Screen name="Overview" component={OverviewScreen} options={{
           tabBarLabel: "Overview",
