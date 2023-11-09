@@ -1,15 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { PieChart } from 'react-native-gifted-charts';
+import { ActivityIndicator, Animated, Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getColors } from 'react-native-image-colors';
 import { AndroidImageColors } from 'react-native-image-colors/build/types';
 import RTNUsageStats from 'rtn-usagestats/js/NativeUsageStats';
 import MyButton from '../components/buttons/Button';
+import Charts from '../components/usagemanager/Charts';
 import { PermissionModal } from '../components/usagemanager/PermissionModal';
-import { formatDuration } from '../utils/formatDuration';
 import { formatDurationDetails } from '../utils/formatDurationDetails';
-import ScrollHideBottomTab from './ScrollHideBottomTab';
-import { useNavigation } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type AppUsage = {
   appInfo: {
@@ -28,6 +27,8 @@ const UsageManagerScreen: () => JSX.Element = () => {
   const AYEAR = 365 * ADAY;
 
   const navigation = useNavigation();
+  const [offset, setOffset] = useState(0);
+  const [animateOffset] = useState(new Animated.Value(0));
 
   const [permissionGranted, setPermissionGranted] = useState<boolean | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,8 +37,6 @@ const UsageManagerScreen: () => JSX.Element = () => {
   const [appUsages, setAppUsages] = useState<Array<AppUsage>>([])
   const otherUsageDur = appUsages
     .filter((appUsage) => appUsage.totalTimeInForeground <= 300000 || !appUsage.appInfo.name)
-    .reduce((acc, cur) => acc + cur.totalTimeInForeground, 0)
-  const totalUsageDur = appUsages
     .reduce((acc, cur) => acc + cur.totalTimeInForeground, 0)
   const chartData = [
     ...appUsages
@@ -114,6 +113,45 @@ const UsageManagerScreen: () => JSX.Element = () => {
     setEndDate(new Date().getTime())
   }
 
+  const onScroll = (event: any) => {
+    const currentOffset = event.nativeEvent.contentOffset.y;
+    const dif = currentOffset - offset;
+
+    if (dif < 0 || currentOffset < 50) {
+      Animated.timing(animateOffset, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+      navigation.setOptions({
+        tabBarStyle: {
+          display: 'flex',
+          animated: true,
+          transform: [{
+            translateY: animateOffset
+          }],
+        }
+      });
+      setOffset(currentOffset);
+    } else {
+      Animated.timing(animateOffset, {
+        toValue: 50,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+      navigation.setOptions({
+        tabBarStyle: {
+          display: 'none',
+          animated: true,
+          transform: [{
+            translateY: animateOffset
+          }],
+        }
+      });
+      setOffset(currentOffset - 50);
+    }
+  }
+
   return (
     <SafeAreaView style={{ height: '100%' }}>
       <PermissionModal modalVisible={modalVisible} setModalVisible={setModalVisible} />
@@ -124,24 +162,7 @@ const UsageManagerScreen: () => JSX.Element = () => {
         </View>
       )}
 
-      {/* <View style={styles.nav}>
-        <TouchableOpacity onPress={() => { }}>
-          <MaterialCommunityIcons name="chart-donut" color={"black"} size={30} />
-
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => { }}>
-          <MaterialCommunityIcons name="chart-bar" color={"black"} size={30} />
-
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => { }}>
-          <MaterialCommunityIcons name="cellphone-lock" color={"black"} size={30} />
-
-        </TouchableOpacity>
-      </View> */}
-
-      <ScrollHideBottomTab navigation={navigation}>
+      <ScrollView onScroll={onScroll} >
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginVertical: 20 }}>
           <MyButton
             label="Yearly"
@@ -165,55 +186,46 @@ const UsageManagerScreen: () => JSX.Element = () => {
             outline={duration != ADAY} />
         </View>
 
-        <View style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-          <PieChart
-            data={chartData}
-            donut
-            centerLabelComponent={() => {
-              return <Text style={{ fontSize: 30 }}>{formatDurationDetails(totalUsageDur)}</Text>;
-            }}
-            innerRadius={90}
-            // showText
-            labelsPosition={'onBorder'}
-            textColor={'#000'}
-            fontWeight={'bold'}
-            focusOnPress
-            onPress={(item: any, index: number) => {
-              setFocusedApp(item.packageName)
-            }}
-          />
-        </View>
+        <Charts chartData={chartData} setFocusedApp={setFocusedApp} />
 
         <View style={{ width: '100%', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', paddingBottom: 80 }}>
           {chartData.map((appUsage, index) => (
-            <View key={index} style={{ width: '25%', padding: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: (appUsage?.packageName == focusedApp ? 1 : 0.8) }}>
-              <Image source={{ uri: `data:image/png;base64,${appUsage.icon}` }} style={{ width: 50, height: 50, borderRadius: 8 }} />
-              <Text>{appUsage.text} </Text>
-              <Text>{formatDuration(appUsage.value)}</Text>
+            <View key={index} style={{ width: '25%', padding: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Image source={{ uri: `data:image/png;base64,${appUsage.icon}` }} style={{ width: 48, height: 48, borderRadius: 8 }} />
+              <Text style={{ fontWeight: 'bold', fontSize: 12 }}>{appUsage.text} </Text>
+              <Text>{formatDurationDetails(appUsage.value)}</Text>
             </View>
           ))}
         </View>
-      </ScrollHideBottomTab>
+      </ScrollView>
 
-      <View style={styles.footer}>
+      <Animated.View style={[styles.footer, {
+        transform: [
+          {
+            translateY: animateOffset,
+          },
+        ],
+      }]}>
         <MyButton
-          label="<"
           onPress={() => {
             setEndDate(endDate - duration)
           }}
-          outline />
+          outline>
+          <MaterialCommunityIcons name="chevron-left" size={16} />
+        </MyButton>
 
         <Text>{durationText}</Text>
 
         <MyButton
-          label=">"
           onPress={() => {
             setEndDate(endDate + duration)
           }}
           outline
-          disabled={endDate >= new Date().getTime()} />
-      </View>
-    </SafeAreaView>
+          disabled={endDate >= new Date().getTime()}>
+          <MaterialCommunityIcons name="chevron-right" size={16} />
+        </MyButton>
+      </Animated.View>
+    </SafeAreaView >
   );
 };
 
@@ -237,7 +249,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingVertical: 10,
+    paddingVertical: 8,
     opacity: 0.8
   },
   loading: {

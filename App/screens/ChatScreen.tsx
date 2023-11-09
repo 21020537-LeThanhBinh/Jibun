@@ -1,13 +1,13 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Keyboard, TouchableOpacity, View, BackHandler } from 'react-native';
+import { Animated, Keyboard, TouchableOpacity, View } from 'react-native';
 import { Bubble, GiftedChat, IMessage } from 'react-native-gifted-chat';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomImagesBubble from '../components/chat/CustomImagesBubble';
 import { Day } from '../components/chat/Day';
 import { createChatTable, createUserTable, deleteChatTable, getChatItems, getDBConnection, saveChatItems, saveUserItems } from '../sqlite/db-service';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const user = {
   _id: 1,
@@ -24,19 +24,68 @@ export function ChatScreen() {
   const navigation = useNavigation();
   const [messages, setMessages] = useState<IMessage[]>([])
   const [offset, setOffset] = useState(0);
+  const [animateOffset] = useState(new Animated.Value(0));
+  const [animateHeight] = useState(new Animated.Value(0));
   const bottomTabBarHeight = useBottomTabBarHeight();
 
   useEffect(() => {
-    // const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-    //   navigation.setOptions({ tabBarStyle: { display: 'none' } });
-    // });
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      // navigation.setOptions({ tabBarStyle: { display: 'none' } });
+      Animated.timing(animateOffset, {
+        toValue: 50,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(animateHeight, {
+        toValue: 50,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+      navigation.setOptions({
+        tabBarStyle: {
+          display: 'none',
+          animated: true,
+          transform: [{
+            translateY: animateOffset
+          }],
+        }
+      });
+      setTimeout(() => {
+        Animated.timing(animateHeight, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
+      }, 200);
+    });
 
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      navigation.setOptions({ tabBarStyle: { display: 'flex' } });
+      animateHeight.setValue(50)
+      Animated.timing(animateOffset, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+      setTimeout(() => {
+        Animated.timing(animateHeight, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
+      }, 0);
+      navigation.setOptions({
+        tabBarStyle: {
+          display: 'flex',
+          animated: true,
+          transform: [{
+            translateY: animateOffset,
+          }],
+        }
+      });
     });
 
     return () => {
-      // showSubscription.remove();
+      showSubscription.remove();
       hideSubscription.remove();
     };
   }, []);
@@ -57,7 +106,13 @@ export function ChatScreen() {
         }))
       } else {
         await Promise.all([
-          saveChatItems(db, []),
+          saveChatItems(db, [{
+            _id: 1,
+            text: 'Hello developer',
+            createdAt: new Date().getTime(),
+            userId: otherUser._id,
+            image: '',
+          }]),
           saveUserItems(db, [user, otherUser])
         ])
       }
@@ -182,42 +237,49 @@ export function ChatScreen() {
   };
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={messages => onSend(messages)}
-      user={user}
-      renderActions={renderActions}
-      renderBubble={renderBubble}
-      renderDay={(props) => {
-        return (
-          <Day
-            {...props}
-            textStyle={{
-              fontWeight: 'bold'
-            }}
-          />
-        );
+    <Animated.View
+      style={{
+        height: '100%',
+        transform: [{
+          translateY: animateHeight
+        }],
       }}
-      textInputProps={{
-        onPressIn: () => {
-          navigation.setOptions({ tabBarStyle: { display: 'none' } });
-        },
-      }}
-      listViewProps={{
-        scrollEventThrottle: 400,
-        onScroll: (event: any) => {
-          const currentOffset = event.nativeEvent.contentOffset.y;
-          const dif = currentOffset - offset;
-      
-          if (dif < 0) {
-            navigation.setOptions({ tabBarStyle: { display: 'flex', animated: true } });
-            setOffset(currentOffset);
-          } else {
-            navigation.setOptions({ tabBarStyle: { display: 'none', animated: true } });
-            setOffset(currentOffset - bottomTabBarHeight);
+    >
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={user}
+        renderActions={renderActions}
+        renderBubble={renderBubble}
+        renderDay={(props) => {
+          return (
+            <Day
+              {...props}
+              textStyle={{
+                fontWeight: 'bold'
+              }}
+            />
+          );
+        }}
+        textInputProps={{
+
+        }}
+        listViewProps={{
+          scrollEventThrottle: 400,
+          onScroll: (event: any) => {
+            const currentOffset = event.nativeEvent.contentOffset.y;
+            const dif = currentOffset - offset;
+
+            if (dif < 0) {
+              navigation.setOptions({ tabBarStyle: { display: 'flex', animated: true } });
+              setOffset(currentOffset);
+            } else {
+              navigation.setOptions({ tabBarStyle: { display: 'none', animated: true } });
+              setOffset(currentOffset - bottomTabBarHeight);
+            }
           }
-        }
-      }}
-    />
+        }}
+      />
+    </Animated.View>
   )
 }

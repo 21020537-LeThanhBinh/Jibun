@@ -2,7 +2,7 @@ import { GestureResponderEvent, Pressable, Text, StyleSheet, View } from "react-
 // import { IconType } from "react-icons";
 
 interface ButtonProps {
-  label: string;
+  label?: string;
   onPress: ((event: GestureResponderEvent) => void) | null | undefined;
   disabled?: boolean;
   outline?: boolean;
@@ -10,6 +10,7 @@ interface ButtonProps {
   small?: boolean;
   // icon?: IconType;
   style?: any;
+  children?: React.ReactNode;
 }
 
 const MyButton: React.FC<ButtonProps> = ({
@@ -20,7 +21,8 @@ const MyButton: React.FC<ButtonProps> = ({
   warning,
   small,
   // icon: Icon,
-  style
+  style,
+  children,
 }) => {
   return (
     <Pressable
@@ -38,9 +40,12 @@ const MyButton: React.FC<ButtonProps> = ({
           "
         />
       )} */}
-      <Text style={[styles.text, outline && styles.textOutline]}>
-        {label}
-      </Text>
+      {!disabled && children}
+      {label && (
+        <Text style={[styles.text, outline && styles.textOutline]}>
+          {label}
+        </Text>
+      )}
     </Pressable>
   )
 }
@@ -51,6 +56,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     paddingHorizontal: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonOutline: {
     backgroundColor: 'white',
