@@ -52,7 +52,7 @@ const MyButton: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#177AD5',
     borderRadius: 10,
     padding: 10,
     paddingHorizontal: 20,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   textOutline: {
-    color: 'blue',
+    color: '#177AD5',
   },
 });
 

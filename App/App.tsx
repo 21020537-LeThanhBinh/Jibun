@@ -17,7 +17,7 @@ const App: () => JSX.Element = () => {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: '#e91e63',
+          tabBarActiveTintColor: '#177AD5',
           // tabBarHideOnKeyboard: true,
           tabBarStyle: {
             height: 50,

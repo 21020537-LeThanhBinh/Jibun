@@ -1,41 +1,19 @@
-import { View, Text, Animated, StyleSheet } from "react-native";
-import MyButton from "../buttons/Button";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { formatDurationDetails } from '../../utils/formatDurationDetails';
+import { Animated, StyleSheet, Text, View } from "react-native";
 import { BarChart, PieChart } from 'react-native-gifted-charts';
-import { useState } from "react";
-import { Pressable } from "react-native";
+import { formatDurationDetails } from '../../utils/formatDurationDetails';
 
-export default function Charts({ chartData, setFocusedApp }: { chartData: any[], setFocusedApp: any }) {
-  const [animateChart] = useState(new Animated.Value(0));
-  const [currentChart, setCurrentChart] = useState('pie');
-  const totalUsageDur = chartData
-    .reduce((acc, cur) => acc + cur.value, 0)
-
-  const onSlideLeft = () => {
-    setCurrentChart('pie')
-    Animated.spring(animateChart, {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  }
-
-  const onSlideRight = () => {
-    setCurrentChart('bar')
-    Animated.spring(animateChart, {
-      toValue: 0,
-      useNativeDriver: true,
-    }).start();
-  }
+export default function Charts({ pieChartData, barChartData, setFocusedApp, animateChart, setEndDate }: { pieChartData: any[], barChartData: any[], setFocusedApp: any, animateChart: Animated.Value, setEndDate: (e: number) => void }) {
+  const totalUsageDur = pieChartData.reduce((acc, cur) => acc + cur.value, 0)
 
   const pie = (
     <PieChart
-      data={chartData}
+      data={pieChartData}
       donut
       centerLabelComponent={() => {
         return <Text style={{ fontSize: 30 }}>{formatDurationDetails(totalUsageDur)}</Text>;
       }}
-      innerRadius={90}
+      innerRadius={85}
+      radius={110}
       // showText
       labelsPosition={'onBorder'}
       textColor={'#000'}
@@ -49,31 +27,35 @@ export default function Charts({ chartData, setFocusedApp }: { chartData: any[],
 
   const bar = (
     <BarChart
-      data={chartData.filter((item, index) => index < 8)}
+      data={barChartData}
       roundedTop
       roundedBottom
-      frontColor={'#177AD5'}
-      barWidth={10}
+      barWidth={15}
       height={240}
+      noOfSections={10}
+      barBorderRadius={4}
+      frontColor="lightgray"
+      yAxisThickness={0}
+      // xAxisThickness={0}
+      initialSpacing={12}
+      showLine
+      lineConfig={{
+        color: '#F29C6E',
+        thickness: 3,
+        curved: true,
+        hideDataPoints: true,
+        shiftY: 20,
+      }}
+      onPress={(item: any, index: number) => {
+        setEndDate(item.endTime)
+      }}
+      isAnimated
+      showFractionalValues
     />
   )
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => {
-          console.log("pressed")
-          onSlideLeft()
-        }}
-        style={[styles.button]}
-      >
-        {currentChart != 'pie' ? (
-          <MaterialCommunityIcons name="chevron-left" size={24} />
-        ) : (
-          <View style={{ width: 24 }}/>
-        )}
-      </Pressable>
-
       <Animated.View style={
         {
           transform: [
@@ -112,20 +94,6 @@ export default function Charts({ chartData, setFocusedApp }: { chartData: any[],
       }>
         {bar}
       </Animated.View>
-
-      <Pressable
-        onPress={() => {
-          console.log("pressed")
-          onSlideRight()
-        }}
-        style={[styles.button]}
-      >
-        {currentChart != 'bar' ? (
-          <MaterialCommunityIcons name="chevron-right" size={24} />
-        ) : (
-          <View style={{ width: 24 }}/>
-        )}
-      </Pressable>
     </View>
   )
 }
@@ -136,22 +104,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 16,
-  },
-  button: {
-    borderRadius: 10,
-    padding: 10,
-    paddingHorizontal: 20,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  text: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  textOutline: {
-    color: 'blue',
   },
 })
