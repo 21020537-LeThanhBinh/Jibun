@@ -127,22 +127,29 @@ class ReminderService {
     });
   }
 
-  getEvents(startDate, endDate) {
-    return new Promise((resolve, reject) => {
-      this.getCalendars()
-        .then(calendars => calendars.map(cal => cal.title))
-        .then(calendars => console.log(calendars))
-    
-      this.getCalendar(MY_CALENDAR).then(({ calendar }) => {
-        RNCalendarEvents.fetchAllEvents(startDate, endDate, [calendar.id]).then(events => {
-          resolve(_.orderBy(events, function (event) { return moment(event.startDate) }))
-        }).catch(error => {
-          reject(error);
-        });
-      }).catch(error => {
-        reject(error);
-      })
-    });
+  // getEvents(startDate, endDate) {
+  //   return new Promise((resolve, reject) => {
+  //     this.getCalendars()
+  //       .then(calendars => calendars.map(cal => cal.title))
+  //       .then(calendars => console.log(calendars))
+
+  //     this.getCalendar(MY_CALENDAR).then(({ calendar }) => {
+  //       RNCalendarEvents.fetchAllEvents(startDate, endDate, [calendar.id]).then(events => {
+  //         resolve(_.orderBy(events, function (event) { return moment(event.startDate) }))
+  //       }).catch(error => {
+  //         reject(error);
+  //       });
+  //     }).catch(error => {
+  //       reject(error);
+  //     })
+  //   });
+  // }
+
+  async getEvents(startDate, endDate) {
+    const calendars = await this.getCalendars();
+    let events = await RNCalendarEvents.fetchAllEvents(startDate, endDate, calendars.map(cal => cal.id));
+    events = _.orderBy(_.flatten(events), function (event) { return moment(event.startDate) });
+    return events;
   }
 
   deleteCalendars() {

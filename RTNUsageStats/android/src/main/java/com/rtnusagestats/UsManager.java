@@ -222,8 +222,12 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
       appInfo.putString("name", getAppNameByPackageName(usageStats.getPackageName()));
       Drawable d = getIconFromPackageName(usageStats.getPackageName(), reactContext);
       Log.d(LOG_TAG, "Drawable: " + d);
-      String encoded = encodeDrawable(d);
-      appInfo.putString("icon", encoded);
+      if (d == null) {
+        appInfo.putString("icon", "");
+      } else {
+        String encoded = encodeDrawable(d);
+        appInfo.putString("icon", encoded);
+      }
       map.putMap("appInfo", appInfo);
 
       map.putDouble("totalTimeInForeground", usageStats.getTotalTimeInForeground());

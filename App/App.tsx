@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CalendarScreen from './screens/CalendarScreen';
@@ -9,6 +9,7 @@ import { LocationScreen } from './screens/LocationScreen';
 import OverviewScreen from './screens/OverviewScreen';
 import UsageManagerScreen from './screens/UsageManagerScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Image } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,6 +65,12 @@ const App: () => JSX.Element = () => {
           tabBarLabel: "Location",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="map-marker" color={color} size={size} />
+          ),
+        }} />
+        <Tab.Screen name="Profile" component={OverviewScreen} options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Image source={require('./img/avatar.jpg')} style={{ borderRadius: 100, width: size, height: size }} />
           ),
         }} />
       </Tab.Navigator>

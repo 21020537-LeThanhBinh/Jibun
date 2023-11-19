@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import MyButton from "../buttons/Button";
+import MyButton from "./buttons/Button";
 
 export default function DurationChanger({ duration, onChangeDuration }: { duration: number, onChangeDuration: (d: number) => void }) {
   const ADAY = 24 * 60 * 60 * 1000;

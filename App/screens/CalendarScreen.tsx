@@ -42,20 +42,20 @@ export default function CalendarScreen() {
 
   useEffect(() => {
     // Todo: optimize
-    const startDate = getDate(-1);
-    const endDate = getDate(4);
-
+    const startDate = new Date(getDate(-3)).toISOString();
+    const endDate = new Date(getDate(3)).toISOString();
     const Reminder = new ReminderService();
     Reminder.getEvents(startDate, endDate)
       .then((events) => {
-        console.log(events);
         // Todo: add type to calendar
-        setEvents(events.map((event: any) => (!event.allDay && {
-          title: event.title,
-          summary: event.description,
-          start: event.startDate,
-          end: event.endDate
-        })));
+        setEvents(events
+          .filter((event: any) => !event.allDay)
+          .map((event: any) => ({
+            title: event.title,
+            summary: event.description,
+            start: event.startDate,
+            end: event.endDate
+          })));
       })
       .catch((error) => {
         console.log(error);
@@ -135,8 +135,8 @@ export default function CalendarScreen() {
 
   const timelineProps: Partial<TimelineProps> = {
     format24h: true,
-    onBackgroundLongPress: createNewEvent,
-    onBackgroundLongPressOut: approveNewEvent,
+    // onBackgroundLongPress: createNewEvent,
+    // onBackgroundLongPressOut: approveNewEvent,
     // scrollToFirst: true,
     // start: 0,
     // end: 24,
@@ -158,7 +158,7 @@ export default function CalendarScreen() {
         firstDay={1}
         leftArrowImageSource={require('../img/previous.png')}
         rightArrowImageSource={require('../img/next.png')}
-        // markedDates={marked}
+      // markedDates={marked}
       />
       <TimelineList
         events={eventsByDate}

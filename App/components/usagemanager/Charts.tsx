@@ -2,7 +2,7 @@ import { Animated, StyleSheet, Text, View } from "react-native";
 import { BarChart, PieChart } from 'react-native-gifted-charts';
 import { formatDurationDetails } from '../../utils/formatDurationDetails';
 
-export default function Charts({ pieChartData, barChartData, setFocusedApp, animateChart, setEndDate }: { pieChartData: any[], barChartData: any[], setFocusedApp: any, animateChart: Animated.Value, setEndDate: (e: number) => void }) {
+export default function Charts({ pieChartData, barChartData, setFocusedApp, animateChart, setEndDate }: { pieChartData: any[], barChartData?: any[], setFocusedApp?: any, animateChart: Animated.Value, setEndDate?: (e: number) => void }) {
   const totalUsageDur = pieChartData.reduce((acc, cur) => acc + cur.value, 0)
 
   const pie = (
@@ -10,9 +10,9 @@ export default function Charts({ pieChartData, barChartData, setFocusedApp, anim
       data={pieChartData}
       donut
       centerLabelComponent={() => {
-        return <Text style={{ fontSize: 30 }}>{formatDurationDetails(totalUsageDur)}</Text>;
+        return <Text style={{ fontSize: 24 }}>{formatDurationDetails(totalUsageDur)}</Text>;
       }}
-      innerRadius={85}
+      innerRadius={80}
       radius={110}
       // showText
       labelsPosition={'onBorder'}
@@ -38,16 +38,16 @@ export default function Charts({ pieChartData, barChartData, setFocusedApp, anim
       yAxisThickness={0}
       // xAxisThickness={0}
       initialSpacing={12}
-      showLine
-      lineConfig={{
-        color: '#F29C6E',
-        thickness: 3,
-        curved: true,
-        hideDataPoints: true,
-        shiftY: 20,
-      }}
+      // showLine
+      // lineConfig={{
+      //   color: '#F29C6E',
+      //   thickness: 3,
+      //   curved: true,
+      //   hideDataPoints: true,
+      //   shiftY: 20,
+      // }}
       onPress={(item: any, index: number) => {
-        setEndDate(item.endTime)
+        setEndDate && setEndDate(item.endTime)
       }}
       isAnimated
       showFractionalValues

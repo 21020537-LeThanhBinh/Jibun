@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Animated, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Charts from '../components/usagemanager/Charts';
-import DurationChanger from '../components/usagemanager/DurationChanger';
+import DurationChanger from '../components/DurationChanger';
 import Footer from '../components/usagemanager/Footer';
 import { PermissionModal } from '../components/usagemanager/PermissionModal';
 import getUsageStats from '../components/usagemanager/getUsageStats';
 import { AppUsage } from '../types/AppUsage';
 import { formatDurationDetails } from '../utils/formatDurationDetails';
-import { onScroll } from '../components/usagemanager/animate';
+import { onScroll } from '../components/usagemanager/animateHideTabOnScroll';
 
 const UsageManagerScreen: () => JSX.Element = () => {
   const ADAY = 24 * 60 * 60 * 1000;
