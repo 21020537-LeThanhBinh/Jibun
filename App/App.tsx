@@ -10,6 +10,7 @@ import OverviewScreen from './screens/OverviewScreen';
 import UsageManagerScreen from './screens/UsageManagerScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
+import SleepScreen from './screens/SleepScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,12 +50,12 @@ const App: () => JSX.Element = () => {
             <MaterialCommunityIcons name="calendar-account" color={color} size={size} />
           ),
         }} /> */}
-        {/* <Tab.Screen name="Google Fit" component={GoogleFitScreen} options={{
-          tabBarLabel: "Google Fit",
+        <Tab.Screen name="Sleep" component={SleepScreen} options={{
+          tabBarLabel: "Sleep",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="google-fit" color={color} size={size} />
+            <MaterialCommunityIcons name="bed" color={color} size={size} />
           ),
-        }} /> */}
+        }} />
         <Tab.Screen name="Chat" component={ChatScreen} options={{
           tabBarLabel: "Chat",
           tabBarIcon: ({ color, size }) => (

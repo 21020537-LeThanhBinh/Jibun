@@ -7,7 +7,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CustomImagesBubble from '../components/chat/CustomImagesBubble';
 import { Day } from '../components/chat/Day';
-import { createChatTable, createUserTable, deleteChatTable, getChatItems, getDBConnection, saveChatItems, saveUserItems } from '../sqlite/db-service';
+import { createChatTable, createUserTable, deleteChatTable, getChatItems, getDBConnection, saveChatItems, saveUserItems } from '../sqlite/chat-service';
 
 const user = {
   _id: 1,

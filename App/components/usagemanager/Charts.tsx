@@ -1,6 +1,7 @@
 import { Animated, StyleSheet, Text, View } from "react-native";
 import { BarChart, PieChart } from 'react-native-gifted-charts';
 import { formatDurationDetails } from '../../utils/formatDurationDetails';
+import { useEffect } from "react";
 
 export default function Charts({ pieChartData, barChartData, setFocusedApp, animateChart, setEndDate }: { pieChartData: any[], barChartData?: any[], setFocusedApp?: any, animateChart: Animated.Value, setEndDate?: (e: number) => void }) {
   const totalUsageDur = pieChartData.reduce((acc, cur) => acc + cur.value, 0)
@@ -27,7 +28,7 @@ export default function Charts({ pieChartData, barChartData, setFocusedApp, anim
 
   const bar = (
     <BarChart
-      data={barChartData}
+      data={barChartData?.length ? barChartData : Array(8).fill({ value: 0, label: '', frontColor: '#DDD', endTime: 0 })}
       roundedTop
       roundedBottom
       barWidth={15}

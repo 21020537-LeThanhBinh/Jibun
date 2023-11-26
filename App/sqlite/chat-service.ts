@@ -15,7 +15,7 @@ const userTableName = 'userData';
 enablePromise(true);
 
 export const getDBConnection = async () => {
-  return openDatabase({ name: 'chat-data.db', location: 'default' });
+  return openDatabase({ name: 'jibun.db', location: 'default' });
 };
 
 export const createChatTable = async (db: SQLiteDatabase) => {

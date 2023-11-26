@@ -2,14 +2,14 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Animated, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Charts from '../components/usagemanager/Charts';
 import DurationChanger from '../components/DurationChanger';
-import Footer from '../components/usagemanager/Footer';
+import TimeFooter from '../components/TimeFooter';
+import Charts from '../components/usagemanager/Charts';
 import { PermissionModal } from '../components/usagemanager/PermissionModal';
+import { onScroll } from '../components/usagemanager/animateHideTabOnScroll';
 import getUsageStats from '../components/usagemanager/getUsageStats';
 import { AppUsage } from '../types/AppUsage';
 import { formatDurationDetails } from '../utils/formatDurationDetails';
-import { onScroll } from '../components/usagemanager/animateHideTabOnScroll';
 
 const UsageManagerScreen: () => JSX.Element = () => {
   const ADAY = 24 * 60 * 60 * 1000;
@@ -34,7 +34,6 @@ const UsageManagerScreen: () => JSX.Element = () => {
   const [endDate, setEndDate] = useState<number>(new Date().getTime())
   const [duration, setDuration] = useState<number>(ADAY)
   const remainingTime = (ADAY) - (endDate % (ADAY)) - 3 * 60 * 60 * 1000
-  const [durationText, setDurationText] = useState<string>("")
   const [focusedApp, setFocusedApp] = useState<string | null>(null)
   const [currentChart, setCurrentChart] = useState<'pie' | 'bar'>('pie');
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
@@ -96,9 +95,6 @@ const UsageManagerScreen: () => JSX.Element = () => {
         if (!res) return;
         // Todo: check if the duration is aligned with native
         setAppUsages(res)
-
-        if (duration == ADAY) setDurationText(new Date(endDate - duration + remainingTime).toDateString())
-        else setDurationText(new Date(endDate - duration + remainingTime).toDateString() + `\n- ` + new Date(endDate).toDateString())
         setLoading(false)
       })
     } else {
@@ -196,7 +192,7 @@ const UsageManagerScreen: () => JSX.Element = () => {
         </View>
       </ScrollView>
 
-      <Footer endDate={endDate} setEndDate={setEndDate} duration={duration} durationText={durationText} animateOffset={animateOffset} />
+      <TimeFooter endDate={endDate} setEndDate={setEndDate} duration={duration} animateOffset={animateOffset} />
     </SafeAreaView >
   );
 };
