@@ -1,16 +1,14 @@
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CalendarScreen from './screens/CalendarScreen';
 import { ChatScreen } from './screens/ChatScreen';
-// import GoogleCalendarScreen from './screens/GoogleCalendar';
-// import GoogleFitScreen from './screens/GoogleFitScreen';
-import { LocationScreen } from './screens/LocationScreen';
-import OverviewScreen from './screens/OverviewScreen';
-import UsageManagerScreen from './screens/UsageManagerScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image } from 'react-native';
+import { LocationScreen } from './screens/LocationScreen';
+import OverviewScreen from './screens/OverviewScreen';
 import SleepScreen from './screens/SleepScreen';
+import UsageManagerScreen from './screens/UsageManagerScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,12 +42,6 @@ const App: () => JSX.Element = () => {
             <MaterialCommunityIcons name="calendar-account" color={color} size={size} />
           ),
         }} />
-        {/* <Tab.Screen name="GCalendar" component={GoogleCalendarScreen} options={{
-          tabBarLabel: "Calendar",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="calendar-account" color={color} size={size} />
-          ),
-        }} /> */}
         <Tab.Screen name="Sleep" component={SleepScreen} options={{
           tabBarLabel: "Sleep",
           tabBarIcon: ({ color, size }) => (

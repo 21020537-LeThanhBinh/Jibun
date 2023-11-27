@@ -54,9 +54,7 @@ const SleepScreen: () => JSX.Element = () => {
       <ScrollView onScroll={(event) => onScroll({ event, offset, setOffset, animateOffset, navigation })} >
         {/* <DurationChanger duration={duration} onChangeDuration={onChangeDuration} /> */}
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginVertical: 12 }}>
-          <Chart
-            sleepItems={sleepItems}
-          />
+          <Chart sleepItems={sleepItems} />
         </View>
 
         <View style={{ width: '100%', display: 'flex', gap: 20, paddingHorizontal: 24, flexDirection: 'column-reverse' }}>
