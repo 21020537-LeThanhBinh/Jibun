@@ -12,6 +12,7 @@ export interface Spec extends TurboModule {
       packageName: string;
       name: string;
       icon: string;
+      lastTimeUsed: string;
     };
     totalTimeInForeground: number;
   }>>;

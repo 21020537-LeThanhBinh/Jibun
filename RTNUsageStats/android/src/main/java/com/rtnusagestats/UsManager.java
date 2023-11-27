@@ -220,8 +220,9 @@ class UsManager extends ReactContextBaseJavaModule implements ActivityEventListe
       WritableMap appInfo = new WritableNativeMap();
       appInfo.putString("packageName", usageStats.getPackageName());
       appInfo.putString("name", getAppNameByPackageName(usageStats.getPackageName()));
+      appInfo.putString("lastTimeUsed", String.valueOf(usageStats.getLastTimeUsed()));
+
       Drawable d = getIconFromPackageName(usageStats.getPackageName(), reactContext);
-      Log.d(LOG_TAG, "Drawable: " + d);
       if (d == null) {
         appInfo.putString("icon", "");
       } else {
