@@ -54,18 +54,18 @@ const App: () => JSX.Element = () => {
             <MaterialCommunityIcons name="chat" color={color} size={size} />
           ),
         }} />
-        <Tab.Screen name="Location" component={LocationScreen} options={{
+        {/* <Tab.Screen name="Location" component={LocationScreen} options={{
           tabBarLabel: "Location",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="map-marker" color={color} size={size} />
           ),
-        }} />
-        <Tab.Screen name="Profile" component={OverviewScreen} options={{
+        }} /> */}
+        {/* <Tab.Screen name="Profile" component={OverviewScreen} options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
             <Image source={require('./img/avatar.jpg')} style={{ borderRadius: 100, width: size, height: size }} />
           ),
-        }} />
+        }} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );

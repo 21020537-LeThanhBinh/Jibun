@@ -9,7 +9,7 @@ const saveSleepItem = async (sleepItem: ISleep) => {
     await createTable(db);
     // Check if sleepItem exists
     const sleepItemInDB = await searchSleepItem(db, sleepItem.date);
-    if (sleepItemInDB && !!sleepItemInDB.quality) {
+    if (sleepItemInDB && !sleepItemInDB.quality) {
       // Update sleepItem
       await updateSleepItem(db, {
         ...sleepItem,

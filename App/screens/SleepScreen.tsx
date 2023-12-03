@@ -8,6 +8,10 @@ import { onScroll } from '../components/sleep/animateHideTabOnScroll';
 import fetchAllSleepItems from '../components/sleep/fetchAllSleepItems';
 import { ISleep } from '../types/SleepItem';
 import { formatDurationDetails } from '../utils/formatDurationDetails';
+import SleepQualityRatingModal from '../components/sleep/SleepQualityRatingModal';
+import saveSleepItem from '../components/sleep/saveSleepItem';
+import UpdateSleepItemModal from '../components/sleep/UpdateSleepItemModal';
+import updateSleep from '../components/sleep/updateSleepItem';
 
 const SleepScreen: () => JSX.Element = () => {
   const ADAY = 24 * 60 * 60 * 1000;
@@ -19,28 +23,49 @@ const SleepScreen: () => JSX.Element = () => {
 
   const [sleepItems, setSleepItems] = useState<Array<ISleep>>([])
   const [endDate, setEndDate] = useState<number>(new Date().getTime())
-  const [duration, setDuration] = useState<number>(ADAY)
+  const [duration, setDuration] = useState<number>(ADAY * 7)
+
+  const [ratingModalVisible, setRatingModalVisible] = useState(false);
+  const [updatingModalVisible, setUpdatingModalVisible] = useState(false);
+  const [selectedSleepItem, setSelectedSleepItem] = useState<ISleep | null>(null);
 
   useEffect(() => {
     fetchAllSleepItems()
       .then((sleepItems) => {
         console.log(sleepItems)
         setSleepItems(sleepItems)
+        if (!sleepItems.at(-1)?.quality) setRatingModalVisible(true)
       })
   }, [])
 
-  useEffect(() => {
-    // setLoading(true)
+  // useEffect(() => {
+  //   // setLoading(true)
 
-  }, [endDate, duration])
+  // }, [endDate, duration])
 
-  const onChangeDuration = (newDuration: number) => {
-    setDuration(newDuration)
-    setEndDate(new Date().getTime())
+  // const onChangeDuration = (newDuration: number) => {
+  //   setDuration(newDuration)
+  //   setEndDate(new Date().getTime())
+  // }
+
+  const onEditSleepItem = (sleep: ISleep) => {
+    setSelectedSleepItem(sleep)
+    setUpdatingModalVisible(true)
   }
 
-  const onEditSleepItem = (date: string) => {
-    console.log('edit', date)
+  const onFinishEditing = (sleep: ISleep) => {
+    setSleepItems(sleepItems.map((item) => item._id === sleep._id ? sleep : item))
+    updateSleep(sleep)
+    setUpdatingModalVisible(false)
+  }
+
+  const setYesterdaySleepQuality = async (quality: number) => {
+    const yesterdaySleep = sleepItems.at(-1)
+    if (!yesterdaySleep) return
+
+    await saveSleepItem({ ...yesterdaySleep, quality })
+    setSleepItems([...sleepItems.slice(0, -1), { ...yesterdaySleep, quality }])
+    setRatingModalVisible(false)
   }
 
   return (
@@ -54,10 +79,10 @@ const SleepScreen: () => JSX.Element = () => {
       <ScrollView onScroll={(event) => onScroll({ event, offset, setOffset, animateOffset, navigation })} >
         {/* <DurationChanger duration={duration} onChangeDuration={onChangeDuration} /> */}
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginVertical: 12 }}>
-          <Chart sleepItems={sleepItems} />
+          <Chart sleepItems={sleepItems.slice(-8)} />
         </View>
 
-        <View style={{ width: '100%', display: 'flex', gap: 20, paddingHorizontal: 24, flexDirection: 'column-reverse' }}>
+        <View style={{ width: '100%', paddingBottom: 20, display: 'flex', gap: 20, paddingHorizontal: 24, flexDirection: 'column-reverse' }}>
           {/* Sleep history */}
           {sleepItems.map((item) => (
             <View key={item._id} style={{}}>
@@ -67,7 +92,7 @@ const SleepScreen: () => JSX.Element = () => {
                   <Text style={{ fontSize: 14 }}>{new Date(item.date).toLocaleDateString('en-GB', { weekday: 'long' })}</Text>
                 </View>
 
-                <TouchableOpacity onPress={() => onEditSleepItem(item.date)} style={{ width: 30, height: 30 }} >
+                <TouchableOpacity onPress={() => onEditSleepItem(item)} style={{ width: 30, height: 30 }} >
                   <MaterialCommunityIcons name="pencil-outline" size={25} />
                 </TouchableOpacity>
               </View>
@@ -95,7 +120,7 @@ const SleepScreen: () => JSX.Element = () => {
                   . Quality {' '}
                 </Text>
                 <Text style={{ fontWeight: '700' }} >
-                  {item?.quality || 'N/A'}
+                  {item?.quality ? item.quality + '/5' : 'N/A'}
                 </Text>
                 <Text>
                   .
@@ -105,6 +130,9 @@ const SleepScreen: () => JSX.Element = () => {
           ))}
         </View>
       </ScrollView>
+
+      <SleepQualityRatingModal modalVisible={ratingModalVisible} setSleepQuality={setYesterdaySleepQuality} />
+      <UpdateSleepItemModal modalVisible={updatingModalVisible} sleepItem={selectedSleepItem} setSleepItem={onFinishEditing} />
 
       <TimeFooter endDate={endDate} setEndDate={setEndDate} duration={duration} animateOffset={animateOffset} />
     </SafeAreaView >
