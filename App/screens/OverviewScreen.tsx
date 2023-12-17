@@ -2,15 +2,13 @@ import Geolocation from '@react-native-community/geolocation';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { CalendarUtils } from 'react-native-calendars';
-import { PieChart } from 'react-native-gifted-charts';
 import DurationChanger from '../components/DurationChanger';
-import ReminderService from '../components/ReminderService';
+import EventsDuration from '../components/overview/EventsDuration';
+import Sleep from '../components/overview/Sleep';
 import UsageManager from '../components/overview/UsageManager';
 import SmileyFace from '../icons/SmileyFace';
 import { formatDurationDetails } from '../utils/formatDurationDetails';
-import EventsDuration from '../components/overview/EventsDuration';
-import Sleep from '../components/overview/Sleep';
+import Warning from '../components/overview/Warning';
 
 const OverviewScreen: () => JSX.Element = () => {
   const ADAY = 24 * 60 * 60 * 1000;
@@ -56,7 +54,6 @@ const OverviewScreen: () => JSX.Element = () => {
           <ActivityIndicator />
         </View>
       )}
-
       <DurationChanger duration={duration} onChangeDuration={(newDuration) => setDuration(newDuration)} />
 
       <TouchableOpacity
@@ -78,14 +75,21 @@ const OverviewScreen: () => JSX.Element = () => {
           <Sleep />
         </TouchableOpacity>
 
-        <View style={{ height: 120, width: 120 }}>
+        <View style={{ height: 110, width: 110 }}>
           <Text style={{
             fontSize: 12,
             textAlign: 'center',
           }}>
-            Warning...
+            Your location is
+          </Text>
+          <Text style={{
+            fontSize: 16,
+            textAlign: 'center',
+          }}>
+            {currentLocation?.coords.latitude}, {currentLocation?.coords.longitude}
           </Text>
         </View>
+
       </View>
 
       <View style={{ paddingHorizontal: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -112,21 +116,14 @@ const OverviewScreen: () => JSX.Element = () => {
               </Text>
             </>
           )}
-
         </View>
 
-        <View style={{ height: 110, width: 110 }}>
+        <View style={{ height: 120, width: 120 }}>
           <Text style={{
             fontSize: 12,
             textAlign: 'center',
           }}>
-            Your location is
-          </Text>
-          <Text style={{
-            fontSize: 16,
-            textAlign: 'center',
-          }}>
-            {currentLocation?.coords.latitude}, {currentLocation?.coords.longitude}
+            <Warning />
           </Text>
         </View>
 

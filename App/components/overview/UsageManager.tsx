@@ -5,6 +5,7 @@ import { getAsyncData, storeAsyncData } from "../../async-storage/async-storage-
 import { AppUsage } from "../../types/AppUsage"
 import { formatDurationDetails } from "../../utils/formatDurationDetails"
 import getUsageStats from "../usagemanager/getUsageStats"
+import { onCreateTriggerNotification } from "./usageManagerNotification"
 
 const UsageManager = ({ duration, setLoading }: { duration: number, setLoading: (l: boolean) => void }) => {
   const ADAY = 24 * 60 * 60 * 1000;
@@ -22,6 +23,10 @@ const UsageManager = ({ duration, setLoading }: { duration: number, setLoading: 
     { value: otherUsageDur, text: 'Other', icon: '', packageName: '', color: '#DDD' }
   ]
   const totalUsageDur = pieChartData.reduce((acc, cur) => acc + cur.value, 0)
+
+  useEffect(() => {
+    onCreateTriggerNotification()
+  }, [])
 
   useEffect(() => {
     setLoading(true)

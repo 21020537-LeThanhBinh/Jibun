@@ -54,11 +54,11 @@ const EventsDuration = ({ duration, setNextEvent }: { duration: number, setNextE
 
     return [
       ...eventsDuration.sort((a, b) => b.value - a.value),
-      {
-        value: duration - eventsDuration.reduce((acc, cur) => acc + cur.value, 0),
-        text: 'Other',
-        color: '#DDD'
-      }
+      // {
+      //   value: duration - eventsDuration.reduce((acc, cur) => acc + cur.value, 0),
+      //   text: 'Other',
+      //   color: '#DDD'
+      // }
     ]
   }
 
