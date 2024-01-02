@@ -63,7 +63,7 @@ const OverviewScreen: () => JSX.Element = () => {
         <UsageManager duration={duration} setLoading={setLoading} />
       </TouchableOpacity>
 
-      <View style={{ paddingHorizontal: 10, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, alignItems: 'center', marginBottom: 20 }}>
+      <View style={{ paddingHorizontal: 60, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, alignItems: 'center', marginBottom: 20 }}>
         <TouchableOpacity onPress={() => navigation.navigate('Calendar' as never)}>
           <EventsDuration
             duration={duration}
@@ -75,7 +75,7 @@ const OverviewScreen: () => JSX.Element = () => {
           <Sleep />
         </TouchableOpacity>
 
-        <View style={{ height: 110, width: 110 }}>
+        {/* <View style={{ height: 110, width: 110 }}>
           <Text style={{
             fontSize: 12,
             textAlign: 'center',
@@ -88,7 +88,7 @@ const OverviewScreen: () => JSX.Element = () => {
           }}>
             {currentLocation?.coords.latitude}, {currentLocation?.coords.longitude}
           </Text>
-        </View>
+        </View> */}
 
       </View>
 

@@ -188,7 +188,7 @@ export function ChatScreen() {
     launchCamera({
       mediaType: 'photo',
       includeBase64: false,
-      saveToPhotos: true,
+      // saveToPhotos: true,
     }, (response) => {
       // setImage(response);
       if (response.assets) {

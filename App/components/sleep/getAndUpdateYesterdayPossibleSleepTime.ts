@@ -1,6 +1,11 @@
 import RTNUsageStats from 'rtn-usagestats/js/NativeUsageStats';
+import fetchAllSleepItems from './fetchAllSleepItems';
 
 export default async function getAndUpdateYesterdayPossibleSleepTime() {
+  const savedSleepItems = await fetchAllSleepItems()
+  const lastSleepItem = savedSleepItems[savedSleepItems.length - 1]
+  if (lastSleepItem.endTime > new Date().setHours(9, 0, 0, 0)) return lastSleepItem;
+
   const today = new Date()
   const yesterday = new Date(new Date().setDate(today.getDate() - 1))
 
