@@ -5,15 +5,15 @@ export interface Spec extends TurboModule {
   enableUsageStats(): Promise<string>;
   getTodayUsageStats(): Promise<Array<{
     packageName: string;
+    totalTimeInForeground: number;
+  }>>;
+  getRangeUsageStats(startTimeMiliStr: string, endTimeMiliStr: string): Promise<Array<{
     appInfo: {
       packageName: string;
       name: string;
       icon: string;
+      lastTimeUsed: string;
     };
-    totalTimeInForeground: number;
-  }>>;
-  getRangeUsageStats(startTimeMiliStr: string, endTimeMiliStr: string): Promise<Array<{
-    packageName: string;
     totalTimeInForeground: number;
   }>>;
 }

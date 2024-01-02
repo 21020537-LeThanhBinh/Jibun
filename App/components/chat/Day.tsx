@@ -70,16 +70,19 @@ export function Day<TMessage extends IMessage = IMessage>({
   textStyle,
 }: DayProps<TMessage>) {
 
-  // if (currentMessage == null || isSameDay(currentMessage, previousMessage)) {
-  //   return null
-  // }
+  const formatDate = (date: Date) => {
+    if (date.getDate() === new Date().getDate()) {
+      return 'Today, ' + date.toLocaleTimeString()
+    }
+    return date.toLocaleString()
+  }
 
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={wrapperStyle}>
         <Text style={[styles.text, textStyle]}>
           {/* {GeneralUtil.capitalizeText(moment(currentMessage.createdAt).format('MMM DD, YYYY'))} */}
-          Today
+          {currentMessage?.createdAt && (typeof currentMessage.createdAt === 'number' ? currentMessage.createdAt : formatDate(currentMessage.createdAt))}
         </Text>
       </View>
     </View>

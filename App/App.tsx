@@ -1,12 +1,13 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CalendarScreen from './screens/CalendarScreen';
-import { Chat } from './screens/Chat';
-import GoogleCalendarScreen from './screens/GoogleCalendar';
-import GoogleFitScreen from './screens/GoogleFitScreen';
-import OverviewScreen from './screens/Overview';
+import { ChatScreen } from './screens/ChatScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Image } from 'react-native';
+import { LocationScreen } from './screens/LocationScreen';
+import OverviewScreen from './screens/OverviewScreen';
+import SleepScreen from './screens/SleepScreen';
 import UsageManagerScreen from './screens/UsageManagerScreen';
 
 const Tab = createBottomTabNavigator();
@@ -16,7 +17,11 @@ const App: () => JSX.Element = () => {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: '#e91e63',
+          tabBarActiveTintColor: '#177AD5',
+          // tabBarHideOnKeyboard: true,
+          tabBarStyle: {
+            height: 50,
+          },
         }}
       >
         <Tab.Screen name="Overview" component={OverviewScreen} options={{
@@ -37,24 +42,30 @@ const App: () => JSX.Element = () => {
             <MaterialCommunityIcons name="calendar-account" color={color} size={size} />
           ),
         }} />
-        <Tab.Screen name="GCalendar" component={GoogleCalendarScreen} options={{
-          tabBarLabel: "Calendar",
+        <Tab.Screen name="Sleep" component={SleepScreen} options={{
+          tabBarLabel: "Sleep",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="calendar-account" color={color} size={size} />
+            <MaterialCommunityIcons name="bed" color={color} size={size} />
           ),
         }} />
-        <Tab.Screen name="Google Fit" component={GoogleFitScreen} options={{
-          tabBarLabel: "Google Fit",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="google-fit" color={color} size={size} />
-          ),
-        }} />
-        <Tab.Screen name="Chat" component={Chat} options={{
+        <Tab.Screen name="Chat" component={ChatScreen} options={{
           tabBarLabel: "Chat",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="chat" color={color} size={size} />
           ),
         }} />
+        {/* <Tab.Screen name="Location" component={LocationScreen} options={{
+          tabBarLabel: "Location",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="map-marker" color={color} size={size} />
+          ),
+        }} /> */}
+        {/* <Tab.Screen name="Profile" component={OverviewScreen} options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Image source={require('./img/avatar.jpg')} style={{ borderRadius: 100, width: size, height: size }} />
+          ),
+        }} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );

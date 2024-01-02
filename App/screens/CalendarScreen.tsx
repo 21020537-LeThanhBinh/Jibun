@@ -24,6 +24,7 @@ const EVENTS: TimelineEventProps[] = [
     summary: 'Merge Timeline Calendar to React Native Calendars'
   }
 ];
+
 export default function CalendarScreen() {
   const [currentDate, setCurrentDate] = useState(getDate());
   const [events, setEvents] = useState(EVENTS);
@@ -41,20 +42,20 @@ export default function CalendarScreen() {
 
   useEffect(() => {
     // Todo: optimize
-    const startDate = new Date(currentDate).toISOString();
-    const endDate = new Date(new Date(currentDate).getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
-
+    const startDate = new Date(getDate(-3)).toISOString();
+    const endDate = new Date(getDate(3)).toISOString();
     const Reminder = new ReminderService();
     Reminder.getEvents(startDate, endDate)
-      .then((calendars) => {
-        console.log(calendars);
+      .then((events) => {
         // Todo: add type to calendar
-        setEvents(calendars.map((calendar: any) => (!calendar.allDay && {
-          title: calendar.title,
-          summary: calendar.description,
-          start: calendar.startDate,
-          end: calendar.endDate
-        })));
+        setEvents(events
+          .filter((event: any) => !event.allDay)
+          .map((event: any) => ({
+            title: event.title,
+            summary: event.description,
+            start: event.startDate,
+            end: event.endDate
+          })));
       })
       .catch((error) => {
         console.log(error);
@@ -155,9 +156,9 @@ export default function CalendarScreen() {
     >
       <ExpandableCalendar
         firstDay={1}
-        // leftArrowImageSource={require('../img/previous.png')}
-        // rightArrowImageSource={require('../img/next.png')}
-        // markedDates={marked}
+        leftArrowImageSource={require('../img/previous.png')}
+        rightArrowImageSource={require('../img/next.png')}
+      // markedDates={marked}
       />
       <TimelineList
         events={eventsByDate}
